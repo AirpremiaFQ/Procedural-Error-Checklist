@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procedural Error Checklist – AIR PREMIA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+    :root {
+        --sc: #1D2951; 
+        --gh: #f4f6f9; 
+        --highlight: #e8ecf3; 
+        --border: 1px solid #1D2951;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; background: #ddd; padding: 20px; }
+    .toolbar { background: var(--sc); display: flex; align-items: center; gap: 10px; padding: 10px 15mm; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #000; width: 297mm; margin: 0 auto;}
+    .toolbar button,
+    .toolbar .tb-btn,
+    #tabs-container button {
+      height: 32px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 15px;
+      font-size: 13px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .tb-btn { background: #fff; color: var(--sc); }
+    .tb-btn:hover { background: #eee; }
+
+    .page-delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid #ff4d4d;
+      background: #fff;
+      color: #ff4d4d;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      transition: all 0.15s ease;
+    }
+    .page-delete-btn:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+    .page-delete-btn:active {
+      transform: scale(0.92);
+    }
+    #all-pages-container .page:first-child .page-delete-btn {
+      display: none;
+    }
+    .page { background: #fff; width: 297mm; min-height: 200mm; margin: 0 auto; padding: 5mm 15mm 15mm 15mm; box-shadow: 0 0 15px rgba(0,0,0,0.5); position: relative; }
+    .header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--sc); padding-bottom: 10px; margin-bottom: 15px; }
+    .title { font-size: 22px; font-weight: 900; color: var(--sc); }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
+    th, td { border: var(--border); padding: 6px; font-size: 11px; vertical-align: middle; }
+    th { background: var(--sc); color: #fff; text-align: center; }
+    .lbl { background: var(--gh); font-weight: bold; text-align: center; color: var(--sc); }
+    .lbl-highlight { background: var(--highlight) !important; font-weight: bold; text-align: center; color: var(--sc); }
+    select { 
+        width: auto; min-width: 80px; max-width: 100%; border: 1px solid #ccc; border-radius: 4px; font-size: 11px;
+        padding: 3px 20px 3px 6px; outline: none; background-color: #fff; font-family: inherit; cursor: pointer; appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231D2951' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat; background-position: right 4px center; background-size: 10px; transition: border-color 0.2s; display: inline-block;
+    }
+    select:focus { border-color: var(--sc); }
+    input[type="text"], input[type="number"], textarea { width: 100%; border: none; border-bottom: 1px solid #ccc; font-size: 12px; padding: 2px; outline: none; background: transparent; }
+    textarea { height: 100px; resize: none; border: 1px solid #ccc; padding: 8px; margin-top: 5px; background: #fff; border-radius: 4px; }
+    .sec-title { background: none; color: var(--sc); padding: 4px 0; font-weight: bold; margin-bottom: 2px; display: inline-block; font-size: 14px; font-weight: 900; border-radius: 2px 2px 0 0; }
+    
+    .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); }
+    .modal-content { background-color: #fff; margin: 2% auto; padding: 25px; border-radius: 8px; width: 90%; max-height: 95vh; overflow-y: auto; position: relative; }
+    
+    .reset-modal { display: none; position: fixed; z-index: 300; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+    .reset-modal-content { background: #fff; padding: 25px; border-radius: 8px; text-align: center; width: 320px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .reset-btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+    .btn-confirm { background: #ff4d4d; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .btn-cancel { background: #eee; color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
+    .close-btn { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: var(--sc); font-weight: bold; }
+    .modal-h { font-size: 17px; font-weight: bold; border-bottom: 2px solid var(--sc); margin-bottom: 20px; padding-bottom: 5px; color: var(--sc); }
+    
+    /* SEND 모달 */
+    .send-modal-content { background: #fff; padding: 30px; border-radius: 8px; width: 480px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .send-btn-row { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    .send-btn-row button { padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; font-size: 13px; }
+    .btn-pdf { background: #27ae60; color: #fff; }
+    .btn-json { background: #4a90e2; color: #fff; }
+    .btn-mail { background: #e67e22; color: #fff; }
+    .btn-slack { background: #4A154B; color: #fff; }
+    .send-info { background: #f4f6f9; padding: 12px; border-left: 3px solid var(--sc); margin: 10px 0; font-size: 12px; line-height: 1.6; }
+
+    .ref-table { width: 100%; border-collapse: collapse; }
+    .ref-table th, .ref-table td { border: 1px solid #ccc; padding: 6px; font-size: 12px; }
+    .ref-table th { background: var(--sc); color: #fff; }
+    .ref-cat { background: #f4f6f9; font-weight: bold; text-align: center; }
+    .editable-td { text-align: center; }
+
+@media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .no-print, .page-delete-btn { display: none !important; }
+    .page { box-shadow: none; margin: 0; padding: 5mm 15mm 15mm 15mm; width: 100%; min-height: auto; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    textarea { display: none; }
+    #print-remark { display: block; white-space: pre-wrap; padding: 8px; border: 1px solid #ccc; min-height: 100px; }
+    @page {
+        size: A4 landscape;
+        margin: 5mm;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <span style="color:#fff; font-weight:bold; font-size: 20px; margin-right: auto;">AIR PREMIA</span>
+
+<div id="tabs-container" style="display: flex; gap: 5px; margin-right: auto;"></div>
+    <button class="tb-btn" style="background:#4a90e2; color:#fff;" onclick="openModal('refModal1')">ERROR CODE GUIDANCE</button>
+    <button class="tb-btn" style="background:#4a90e2; color:#fff;" onclick="openModal('refModal2')">ROOT CAUSE & FACTORS GUIDANCE</button>
+    <button class="tb-btn" style="background:#F06292; color:#fff;" onclick="addNewPage()">ADD PAGE</button>
+    <button class="tb-btn" style="background:#27ae60; color:#fff;" onclick="openSendModal()">SEND</button>
+    <button class="tb-btn" style="background:#ff4d4d; color:#fff;" onclick="resetForm()">RESET</button>
+</div>
+
+<template id="page-template">
+    <div class="page" style="margin-bottom: 20px;">
+        <div class="header">
+        <div>
+            <div class="title">Procedural Error Checklist</div>
+            <div style="font-weight:bold; color:var(--sc); font-size: 13px;">AIR PREMIA · Flight Quality Assurance Team</div>
+        </div>
+        <div style="text-align:right; font-size:12px;">
+            <div><b>Audit No.:</b> <input type="text" data-field="audit_no" style="width:100px; display:inline-block;" placeholder="LOA-"></div>
+            <div><b>Date:</b> <input type="text" data-field="date" style="width:100px; display:inline-block;" placeholder="YYYY-MM-DD"></div>
+        </div>
+    </div>
+
+    <div class="sec-title">1. FLIGHT INFORMATION</div>
+    <table>
+        <tr>
+            <td class="lbl-highlight" style="width:110px;">ROUTE</td>
+            <td>
+                <select data-field="route" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <optgroup label="JAPAN / ASIA">
+                    <option>ICN-NRT</option><option>NRT-ICN</option>
+                    <option>ICN-HKG</option><option>HKG-ICN</option>
+                    <option>ICN-DAD</option><option>DAD-ICN</option>
+                    <option>ICN-BKK</option><option>BKK-ICN</option>  
+                    </optgroup>
+                    <optgroup label="AMERICA (West)">
+                    <option>ICN-HNL</option><option>HNL-ICN</option>
+                    <option>ICN-SFO</option><option>SFO-ICN</option>
+                    <option>ICN-LAX</option><option>LAX-ICN</option>
+                    </optgroup>
+                    <optgroup label="AMERICA (East)">
+                    <option>ICN-EWR</option><option>EWR-ICN</option>
+                    <option>ICN-IAD</option><option>IAD-ICN</option>
+                    </optgroup>
+                </select>
+            </td>
+            <td class="lbl-highlight" style="width:110px;">TKO / LAND</td>
+            <td>
+                <select data-field="tko_land" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>CAPT / CAPT</option><option>FO / FO</option><option>CAPT / FO</option><option>FO / CAPT</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="lbl-highlight">PHASE</td>
+            <td>
+                <select data-field="phase" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>PreDep / Taxi</option><option>TKO / CLB</option><option>CRZ</option><option>DES / APP / LDG</option><option>TAXI-IN</option><option>ALL</option>
+                </select>
+            </td>
+            <td class="lbl-highlight">AUDITOR</td>
+            <td>
+                <select data-field="auditor" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>고희덕</option><option>경진수</option><option>박병열</option><option>조성식</option><option>정진수</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="sec-title">2. ERROR IDENTIFICATION</div>
+    <table>
+        <tr>
+            <td class="lbl-highlight" style="width:110px;">ERROR NUMBER</td>
+            <td>
+                <select data-field="error_number" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>E1</option><option>E2</option><option>E3</option><option>E4</option><option>E5</option><option>E6</option>
+                </select>
+            </td>
+            <td class="lbl" style="width:110px;">ERROR CODE</td>
+            <td>
+                <select data-field="error_code" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <optgroup label="SOP">
+                    <option>200. Failure to cross-verify MCP / FMS / CDU / FMA mode changes</option>
+                    <option>201. Failure to cross-verify altimeter settings</option>
+                    <option>202. Failure to cross-verify ATC clearances</option>
+                    <option>203. Failure to execute a go-around after passing procedural bottom lines of an unstable approach</option>
+                    <option>204. Sterile cockpit violations</option>
+                    <option>205. Performing correct task procedures out of sequence</option>
+                    <option>206. PF makes own MCP / FMS changes</option>
+                    <option>207. PF makes own Flight control setting</option>
+                    <option>208. Both pilots head down</option>
+                    <option>209. PM/PF duty allocation not clear</option>
+                    <option>210. Omitted handover procedures – Flight control / communication</option>
+                    <option>211. Setting altimeters before the transition altitude</option>
+                    <option>212. Using equipment placarded INOP</option>
+                    <option>213. A/C operation with unresolved MEL</option>
+                    <option>214. Failure to cross-verify paperwork or documentation</option>
+                    <option>229. Other SOPs errors</option>
+                    </optgroup>
+                    <optgroup label="Checklist">
+                    <option>230. Missed Checklist item</option>
+                    <option>231. Omitted / forgot Checklist</option>
+                    <option>232. Wrong Checklist performed</option>
+                    <option>233. Checklist performed late or wrong time</option>
+                    <option>234. Incorrect challenge and response</option>
+                    <option>235. Response without verification</option>
+                    <option>236. Completed Checklist not called "complete"</option>
+                    <option>237. Checklist performed by memory</option>
+                    <option>238. Self-initiated / performed Checklist</option>
+                    <option>249. Other Checklist errors</option>
+                    </optgroup>
+                    <optgroup label="Briefing">
+                    <option>250. Incomplete or omitted T/O briefing</option>
+                    <option>251. Incomplete or omitted approach briefing</option>
+                    <option>252. Incomplete or omitted Flight attendant briefing</option>
+                    <option>253. Incomplete or omitted engine-out briefing</option>
+                    <option>259. Other briefing errors</option>
+                    </optgroup>
+                    <optgroup label="Callout">
+                    <option>260. Omitted callouts</option>
+                    <option>261. Incorrect callouts</option>
+                    <option>269. Other callout errors</option>
+                    </optgroup>
+                    <optgroup label="Documentation">
+                    <option>270. Incorrect weight and balance read</option>
+                    <option>271. Incorrect fuel information recorded</option>
+                    <option>272. Misinterpreted items on the documents (Flight plan / WX charts / NOTAM / dispatch release / FMLB)</option>
+                    <option>273. Missed items on the documents</option>
+                    <option>274. Incorrect runway information recorded</option>
+                    <option>275. Incorrect performance calculations</option>
+                    <option>276. Incorrect ATIS / ATC clearance recorded</option>
+                    <option>277. Incorrect application of MEL</option>
+                    <option>278. Incorrect application of manuals / charts</option>
+                    <option>279. Omitted / incorrect FMLB entries</option>
+                    <option>289. Other documentation errors</option>
+                    </optgroup>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="lbl" style="width:110px;">ERROR TYPE</td>
+            <td>
+                <select data-field="error_type" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Omission</option><option>Incorrect action</option><option>Wrong sequence</option><option>Late execution</option><option>Monitoring failure</option><option>All</option>
+                </select>
+            </td>
+            <td class="lbl-highlight" style="width:110px;">DETECTION TIME</td>
+            <td>
+                <select data-field="detection_time" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Immediate (during task)</option><option>Delayed (later stage)</option><option>Undetected</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="lbl-highlight">COMMITTED BY</td>
+            <td>
+                <select data-field="committed_by" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Capt</option><option>FO</option><option>PF(Capt)</option><option>PF(FO)</option><option>PM(Capt)</option><option>PM(FO)</option><option>All Crew</option>
+                </select>
+            </td>
+            <td class="lbl-highlight">DETECTED BY</td>
+            <td>
+                <select data-field="detected_by" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Capt</option><option>FO</option><option>PF(Capt)</option><option>PF(FO)</option><option>PM(Capt)</option><option>PM(FO)</option><option>All Crew</option><option>Safety Crew</option><option>Observer</option><option>ATC</option><option>Cabin Crew</option><option>Dispatch</option><option>Ground staff</option><option>Aircraft system</option><option>Nobody(or Auditor)</option><option>Others</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="sec-title">3. CREW STATE</div>
+    <table>
+        <tr>
+            <td class="lbl" style="width:110px;">FATIGUE</td>
+            <td>
+                <select data-field="fatigue" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Low</option><option>Medium</option><option>High</option><option>None</option>
+                </select>
+            </td>
+            <td class="lbl" style="width:110px;">ATTENTION</td>
+            <td>
+                <select data-field="attention" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Normal scan</option><option>Channelized</option><option>Fixation</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="lbl" style="width:110px;">WORKLOAD</td>
+            <td>
+                <select data-field="workload" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Low</option><option>Medium</option><option>High</option><option>None</option>
+                </select>
+            </td>
+            <td class="lbl" style="width:110px;">COMMUNICATION</td>
+            <td>
+                <select data-field="communication" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Standard</option><option>Reduced</option><option>Ineffective</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="lbl" style="width:110px;">TIME PRESSURE</td>
+            <td>
+                <select data-field="time_pressure" style="width:100%;">
+                    <option value="">— Select —</option>
+                    <option>Low</option><option>Medium</option><option>High</option><option>None</option>
+                </select>
+            </td>
+            <td colspan="2" style="background: #f9f9f9; border: none;"></td>
+        </tr>
+    </table>
+    
+    <div class="sec-title">4. CRM COUNTERMEASURES</div>
+    <table>
+        <tr>
+            <td class="lbl">BRIEFING PERFORMANCE</td>
+            <td class="lbl">MONITORING (PF/PM)</td>
+            <td class="lbl">CROSS-CHECK</td>
+            <td class="lbl">CHALLENGE</td>
+            <td class="lbl">INTERVENTION</td>
+        </tr>
+        <tr>
+            <td><select data-field="briefing" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option><option>N/A</option></select></td>
+            <td><select data-field="monitoring" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+            <td><select data-field="cross_check" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+            <td><select data-field="challenge" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+            <td><select data-field="intervention" style="width:100%;"><option value="">— Select —</option><option>Too Early</option><option>Timely</option><option>Late</option><option>None</option></select></td>
+        </tr>
+    </table>
+
+    <div class="sec-title">5. ROOT CAUSE CLASSIFICATION</div>
+  <table>
+    <tr>
+        <td class="lbl-highlight" style="width: 20%;">ROOT CAUSE</td>
+        <td colspan="4" style="padding: 0; border-left: none;">
+            <div style="display: flex; width: 100%;">
+                <div style="width: 25%; padding: 5px; box-sizing: border-box;">
+                    <select data-field="root_cause" style="width: 100%;">
+                <option value="">— Select —</option>
+                <option>Slip</option>
+                <option>Lapse</option>
+                <option>Mistake</option>
+                <option>Intentional deviation</option>
+                <option>Training gap</option>
+                <option>SOP design issue</option>
+                <option>CRM breakdown</option>
+                <option>Environmental factor</option>
+                <option>Organizational factor</option>
+            </select>
+                </div>
+                <div style="flex: 1;"></div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+    <div class="sec-title">6. REMARKS</div>
+    <div style="width: 100%;"><textarea data-field="remarks" oninput="autoResize(this)" placeholder="Enter remarks here..." style="overflow:hidden; resize:none;"></textarea><div id="print-remark"></div>
+</div>
+</div> 
+</template>
+<div id="all-pages-container"></div>
+
+<!-- ERROR CODE GUIDANCE 모달 -->
+<div id="refModal1" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('refModal1')">&times;</span>
+        <div class="modal-h">ERROR CODE GUIDANCE: Procedural Error Code Reference</div>
+        <table class="ref-table">
+            <thead><tr><th>Category</th><th>Code</th><th>Description</th><th>Type</th></tr></thead>
+            <tbody>
+                <tr><td class="ref-cat" rowspan="3">SOPs</td><td>200-214</td><td>Cross-verify, sequence, callout 등 절차 위반</td><td>Various</td></tr>
+                <tr><td>229</td><td>Other SOPs errors</td><td>All</td></tr>
+                <tr><td>230-249</td><td>Checklist 관련 (생략, 순서, 잘못된 수행)</td><td>Various</td></tr>
+                <tr><td class="ref-cat">Briefings</td><td>250-259</td><td>T/O, approach, FA, engine-out briefing</td><td>Omission</td></tr>
+                <tr><td class="ref-cat">Callouts</td><td>260-269</td><td>Omitted/incorrect callouts</td><td>Omission/Action</td></tr>
+                <tr><td class="ref-cat">Documentation</td><td>270-289</td><td>W&B, fuel, NOTAM, MEL, FMLB 등</td><td>Various</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top:15px; font-size:12px; color:#666;">상세 코드는 ERROR CODE 드롭다운에서 직접 확인하세요.</p>
+    </div>
+</div>
+
+<!-- ROOT CAUSE GUIDANCE 모달 -->
+<div id="refModal2" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('refModal2')">&times;</span>
+        <div class="modal-h">ROOT CAUSE & FACTORS GUIDANCE</div>
+        <table class="ref-table">
+            <thead><tr><th>구분</th><th>정의</th><th>예시</th></tr></thead>
+            <tbody>
+                <tr><td class="ref-cat">Slip</td><td>알고 있었지만 실행 단계에서 실수</td><td>스위치 잘못 선택, 입력 오타</td></tr>
+                <tr><td class="ref-cat">Lapse</td><td>해야 한다는 사실 자체를 망각</td><td>Checklist item skip, Callout 미실시</td></tr>
+                <tr><td class="ref-cat">Mistake</td><td>의도적이지만 판단이 틀림</td><td>잘못된 flap 선택, speed 계산 오류</td></tr>
+                <tr><td class="ref-cat">Intentional Deviation</td><td>SOP를 알고 의도적으로 위반</td><td>Briefing 생략, Checklist shortcut</td></tr>
+                <tr><td class="ref-cat">Training Gap</td><td>훈련/숙련 부족으로 발생</td><td>Rare procedure 실패, Memory item 실패</td></tr>
+                <tr><td class="ref-cat">SOP Design Issue</td><td>절차 자체가 오류 유발 설계</td><td>Step sequence 비직관적</td></tr>
+                <tr><td class="ref-cat">CRM Breakdown</td><td>Crew interaction 문제</td><td>PM monitoring 실패, Challenge 안함</td></tr>
+                <tr><td class="ref-cat">Organizational Factor</td><td>조직 환경 영향</td><td>Turnaround 압박으로 rush</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- SEND 모달 (PDF + JSON 선택) -->
+<div id="sendModal" class="reset-modal">
+    <div class="send-modal-content">
+        <h2 style="color:var(--sc); margin-bottom:15px;">📤 SEND / EXPORT</h2>
+        <div class="send-info">
+            <b>1. PDF 저장</b>: 인쇄 화면 → PDF로 저장 → 메일/슬랙 첨부<br>
+            <b>2. JSON 다운로드</b>: 엑셀에 자동 입력할 데이터 파일<br>
+            <b>3. 추천 워크플로</b>: ① PDF 저장 → ② JSON 다운로드 → ③ 둘 다 첨부 전송
+        </div>
+        <div class="send-btn-row">
+            <button class="btn-pdf" onclick="savePDF()">📄 PDF 저장</button>
+            <button class="btn-json" onclick="downloadJSON()">💾 JSON 다운로드</button>
+        </div>
+        <div class="send-btn-row">
+            <button class="btn-mail" onclick="openMailto()">📧 메일 작성 열기</button>
+            <button class="btn-slack" onclick="copyForSlack()">💬 Slack용 복사</button>
+        </div>
+        <div style="text-align:center; margin-top:15px;">
+            <button class="btn-cancel" onclick="closeSendModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 리셋 모달 -->
+<div id="resetModal" class="reset-modal">
+    <div class="reset-modal-content">
+        <p style="font-weight: bold; font-size: 18px; line-height: 1.5;">입력 내용이 모두 삭제됩니다.<br>계속 하시겠습니까?</p>
+        <div class="reset-btn-group">
+            <button class="btn-confirm" onclick="confirmReset()">초기화</button>
+            <button class="btn-cancel" onclick="closeResetModal()">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(id) { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function resetForm() { document.getElementById('resetModal').style.display = 'flex'; }
+    function closeResetModal() { document.getElementById('resetModal').style.display = 'none'; }
+
+    function openSendModal() { document.getElementById('sendModal').style.display = 'flex'; }
+    function closeSendModal() { document.getElementById('sendModal').style.display = 'none'; }
+
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            event.target.style.display = "none";
+        }
+        if (event.target === document.getElementById('resetModal')) {
+            closeResetModal();
+        }
+        if (event.target === document.getElementById('sendModal')) {
+            closeSendModal();
+        }
+    };
+
+    function autoResize(obj) {
+        obj.style.height = 'auto';
+        obj.style.height = obj.scrollHeight + 'px';
+    }
+
+    // ================================================================
+    // 폼 데이터 → JSON 객체 추출
+    // ================================================================
+    function collectFormData() {
+        const pages = document.querySelectorAll('#all-pages-container .page');
+        const records = [];
+
+        pages.forEach((page, idx) => {
+            const record = { page_no: idx + 1 };
+            const fields = page.querySelectorAll('[data-field]');
+            fields.forEach(el => {
+                const key = el.getAttribute('data-field');
+                record[key] = el.value || '';
+            });
+            // 빈 페이지는 제외 (최소한 ERROR_CODE 또는 ROUTE 중 하나라도 있어야)
+            if (record.error_code || record.route || record.audit_no) {
+                records.push(record);
+            }
+        });
+
+        return {
+            export_date: new Date().toISOString(),
+            form_version: 'PE-26',
+            source: 'AIR PREMIA Procedural Error Checklist',
+            records: records
+        };
+    }
+
+    // ================================================================
+    // PDF 저장 (인쇄 다이얼로그 호출)
+    // ================================================================
+    function savePDF() {
+        // textarea → print div 동기화
+        const textareas = document.querySelectorAll('textarea[data-field]');
+        textareas.forEach(ta => {
+            const printDiv = ta.parentElement.querySelector('#print-remark');
+            if (printDiv) printDiv.innerText = ta.value;
+        });
+
+        closeSendModal();
+        setTimeout(() => window.print(), 200);
+    }
+
+    // ================================================================
+    // JSON 파일 다운로드
+    // ================================================================
+    function downloadJSON() {
+        const data = collectFormData();
+
+        if (data.records.length === 0) {
+            alert('입력된 데이터가 없습니다.\n최소 하나의 항목(Audit No., Route, Error Code 등)을 입력해주세요.');
+            return;
+        }
+
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+
+        // 파일명: PE_데이터_AuditNo_날짜.json
+        const auditNo = data.records[0].audit_no || 'NoAudit';
+        const today = new Date().toISOString().slice(0,10);
+        const fileName = `PE_data_${auditNo}_${today}.json`;
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alert('✓ JSON 파일이 다운로드되었습니다.\n파일명: ' + fileName + '\n\n이 파일을 엑셀에서 임포트하면 자동으로 데이터가 입력됩니다.');
+    }
+
+    // ================================================================
+    // 메일 작성 열기 (mailto:)
+    // ================================================================
+    function openMailto() {
+        const data = collectFormData();
+        const auditNo = data.records[0]?.audit_no || 'No.unknown';
+        const route = data.records[0]?.route || '';
+
+        const subject = encodeURIComponent(`[Procedural Error] ${auditNo} ${route}`);
+        const body = encodeURIComponent(
+            `안녕하세요,\n\n` +
+            `Procedural Error Checklist를 송부드립니다.\n\n` +
+            `- Audit No.: ${auditNo}\n` +
+            `- Route: ${route}\n` +
+            `- 페이지 수: ${data.records.length}\n\n` +
+            `※ 첨부파일:\n` +
+            `  1) PDF (작성한 양식)\n` +
+            `  2) JSON (엑셀 자동입력용)\n\n` +
+            `감사합니다.\n` +
+            `AIR PREMIA · Flight Quality Assurance Team`
+        );
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    // ================================================================
+    // Slack용 텍스트 복사
+    // ================================================================
+    function copyForSlack() {
+        const data = collectFormData();
+        const r = data.records[0] || {};
+
+        const text =
+            `*[Procedural Error Report]*\n` +
+            `• *Audit No.*: ${r.audit_no || '-'}\n` +
+            `• *Route*: ${r.route || '-'}\n` +
+            `• *Phase*: ${r.phase || '-'}\n` +
+            `• *Error Code*: ${r.error_code || '-'}\n` +
+            `• *Root Cause*: ${r.root_cause || '-'}\n` +
+            `• *Total Pages*: ${data.records.length}\n` +
+            `\n📎 PDF / JSON 첨부파일 참조 바랍니다.`;
+
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✓ Slack용 텍스트가 클립보드에 복사되었습니다.\nSlack 채널에 붙여넣고 PDF/JSON 파일을 첨부하세요.');
+        }).catch(() => {
+            prompt('아래 텍스트를 복사하세요:', text);
+        });
+    }
+
+    // ================================================================
+    // 임시 저장 (localStorage)
+    // ================================================================
+    function saveFormData() {
+        const formData = {};
+        const inputs = document.querySelectorAll('select, input, textarea');
+        inputs.forEach((el, index) => { formData[index] = el.value; });
+        localStorage.setItem('ap_checklist_draft', JSON.stringify(formData));
+    }
+
+    function loadFormData() {
+        const savedData = localStorage.getItem('ap_checklist_draft');
+        if (!savedData) return;
+        const formData = JSON.parse(savedData);
+        const inputs = document.querySelectorAll('select, input, textarea');
+        inputs.forEach((el, index) => {
+            if (formData[index] !== undefined) { el.value = formData[index]; }
+        });
+        const textarea = document.querySelector('textarea');
+        if (textarea) autoResize(textarea);
+    }
+
+    function attachAutoSave() {
+        const inputs = document.querySelectorAll('select, input, textarea');
+        inputs.forEach(el => {
+            el.removeEventListener('input', saveFormData);
+            el.addEventListener('input', saveFormData);
+        });
+    }
+
+    // ================================================================
+    // 페이지 추가 / 삭제 / 리셋
+    // ================================================================
+    function addNewPage() {
+        const container = document.getElementById('all-pages-container');
+        const template = document.getElementById('page-template');
+        const newPage = template.content.cloneNode(true);
+
+        const textarea = newPage.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+            const printDiv = this.parentElement.querySelector('#print-remark');
+            if (printDiv) printDiv.innerText = this.value;
+        });
+
+        const pageEl = newPage.querySelector('.page');
+        if (pageEl) {
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'page-delete-btn no-print';
+            delBtn.title = 'Delete this page';
+            delBtn.textContent = '✕';
+            delBtn.onclick = function() {
+                if (confirm('이 페이지를 삭제하시겠습니까?')) {
+                    this.closest('.page').remove();
+                }
+            };
+            pageEl.appendChild(delBtn);
+        }
+
+        container.appendChild(newPage);
+        attachAutoSave();
+    }
+
+    function confirmReset() {
+        const container = document.getElementById('all-pages-container');
+        container.innerHTML = '';
+        addNewPage();
+        localStorage.removeItem('ap_checklist_draft');
+        closeResetModal();
+    }
+
+    // 초기 실행
+    window.addEventListener('DOMContentLoaded', () => {
+        addNewPage();
+        loadFormData();
+        attachAutoSave();
+    });
+</script>
+
+</body>
+</html>
