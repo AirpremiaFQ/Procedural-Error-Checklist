@@ -106,10 +106,10 @@
     .send-info { background: #f4f6f9; padding: 12px; border-left: 3px solid var(--sc); margin: 10px 0; font-size: 12px; line-height: 1.6; }
 
     .ref-table { width: 100%; border-collapse: collapse; }
-    .ref-table th, .ref-table td { border: 1px solid #ccc; padding: 6px; font-size: 12px; }
-    .ref-table th { background: var(--sc); color: #fff; }
-    .ref-cat { background: #f4f6f9; font-weight: bold; text-align: center; }
-    .editable-td { text-align: center; }
+    .ref-table th { background: var(--sc); color: #fff; font-weight: 900; padding: 8px; text-align: center; font-size: 12px; }
+    .ref-table td { padding: 6px; line-height: 1.4; border: 1px solid var(--sc); font-size: 11px; color: #000; font-weight: 500; }
+    .ref-cat { background: var(--gh); font-weight: 900 !important; text-align: center; color: var(--sc); font-size: 12px; }
+    .editable-td { background: #fff; color: #000; text-align: center; font-weight: 900; }
 
 @media print {
     body { background: #fff; padding: 0; }
@@ -416,39 +416,133 @@
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('refModal1')">&times;</span>
         <div class="modal-h">ERROR CODE GUIDANCE: Procedural Error Code Reference</div>
-        <table class="ref-table">
-            <thead><tr><th>Category</th><th>Code</th><th>Description</th><th>Type</th></tr></thead>
-            <tbody>
-                <tr><td class="ref-cat" rowspan="3">SOPs</td><td>200-214</td><td>Cross-verify, sequence, callout 등 절차 위반</td><td>Various</td></tr>
-                <tr><td>229</td><td>Other SOPs errors</td><td>All</td></tr>
-                <tr><td>230-249</td><td>Checklist 관련 (생략, 순서, 잘못된 수행)</td><td>Various</td></tr>
-                <tr><td class="ref-cat">Briefings</td><td>250-259</td><td>T/O, approach, FA, engine-out briefing</td><td>Omission</td></tr>
-                <tr><td class="ref-cat">Callouts</td><td>260-269</td><td>Omitted/incorrect callouts</td><td>Omission/Action</td></tr>
-                <tr><td class="ref-cat">Documentation</td><td>270-289</td><td>W&B, fuel, NOTAM, MEL, FMLB 등</td><td>Various</td></tr>
-            </tbody>
-        </table>
-        <p style="margin-top:15px; font-size:12px; color:#666;">상세 코드는 ERROR CODE 드롭다운에서 직접 확인하세요.</p>
+        <div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">Category</th><th style="width:8%;">Code</th><th style="width:55%;">Error Description</th><th style="width:25%;">Error Type</th></tr></thead>
+                <tbody>
+                    <tr><td rowspan="16" class="ref-cat">SOPs</td><td style="text-align:center;">200</td><td>Failure to cross-verify MCP / FMS / CDU / FMA mode changes</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">201</td><td>Failure to cross-verify altimeter settings</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">202</td><td>Failure to cross-verify ATC clearances</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">203</td><td>Failure to execute a go-around 후 unstable approach</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">204</td><td>Sterile cockpit violations</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">205</td><td>Performing correct task procedures out of sequence</td><td class="editable-td">Wrong Sequence</td></tr>
+                    <tr><td style="text-align:center;">206</td><td>PF makes own MCP / FMS changes</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">207</td><td>PF makes own Flight control setting</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">208</td><td>Both pilots head down</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">209</td><td>PM/PF duty allocation not clear</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">210</td><td>Omitted handover procedures</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">211</td><td>Setting altimeters before transition altitude</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">212</td><td>Using equipment placarded INOP</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">213</td><td>A/C operation with unresolved MEL</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">214</td><td>Failure to cross-verify paperwork</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">229</td><td>Other SOPs errors</td><td class="editable-td">All</td></tr>
+                    <tr><td rowspan="10" class="ref-cat">Checklists</td><td style="text-align:center;">230</td><td>Missed Checklist item</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">231</td><td>Omitted / forgot Checklist</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">232</td><td>Wrong Checklist performed</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">233</td><td>Checklist performed late or wrong time</td><td class="editable-td">Late Execution</td></tr>
+                    <tr><td style="text-align:center;">234</td><td>Incorrect challenge and response</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">235</td><td>Response without verification</td><td class="editable-td">Monitoring Failure</td></tr>
+                    <tr><td style="text-align:center;">236</td><td>Completed Checklist not called “complete”</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">237</td><td>Checklist performed by memory</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">238</td><td>Self-initiated / performed Checklist</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">249</td><td>Other Checklist errors</td><td class="editable-td">All</td></tr>
+                    <tr><td rowspan="5" class="ref-cat">Briefings</td><td style="text-align:center;">250</td><td>Incomplete or omitted T/O briefing</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">251</td><td>Incomplete or omitted approach briefing</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">252</td><td>Incomplete or omitted Flight attendant briefing</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">253</td><td>Incomplete or omitted engine-out briefing</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">259</td><td>Other briefing errors</td><td class="editable-td">All</td></tr>
+                    <tr><td rowspan="3" class="ref-cat">Callouts</td><td style="text-align:center;">260</td><td>Omitted callouts</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">261</td><td>Incorrect callouts</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">269</td><td>Other callout errors</td><td class="editable-td">All</td></tr>
+                    <tr><td rowspan="11" class="ref-cat">Documentation</td><td style="text-align:center;">270</td><td>Incorrect weight and balance read</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">271</td><td>Incorrect fuel information recorded</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">272</td><td>Misinterpreted items on the documents</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">273</td><td>Missed items on the documents</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">274</td><td>Incorrect runway information recorded</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">275</td><td>Incorrect performance calculations</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">276</td><td>Incorrect ATIS / ATC clearance recorded</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">277</td><td>Incorrect application of MEL</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">278</td><td>Incorrect application of manuals / charts</td><td class="editable-td">Incorrect Action</td></tr>
+                    <tr><td style="text-align:center;">279</td><td>Omitted / incorrect FMLB entries</td><td class="editable-td">Omission</td></tr>
+                    <tr><td style="text-align:center;">289</td><td>Other documentation errors</td><td class="editable-td">All</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- ROOT CAUSE GUIDANCE 모달 -->
 <div id="refModal2" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('refModal2')">&times;</span>
         <div class="modal-h">ROOT CAUSE & FACTORS GUIDANCE</div>
-        <table class="ref-table">
-            <thead><tr><th>구분</th><th>정의</th><th>예시</th></tr></thead>
-            <tbody>
-                <tr><td class="ref-cat">Slip</td><td>알고 있었지만 실행 단계에서 실수</td><td>스위치 잘못 선택, 입력 오타</td></tr>
-                <tr><td class="ref-cat">Lapse</td><td>해야 한다는 사실 자체를 망각</td><td>Checklist item skip, Callout 미실시</td></tr>
-                <tr><td class="ref-cat">Mistake</td><td>의도적이지만 판단이 틀림</td><td>잘못된 flap 선택, speed 계산 오류</td></tr>
-                <tr><td class="ref-cat">Intentional Deviation</td><td>SOP를 알고 의도적으로 위반</td><td>Briefing 생략, Checklist shortcut</td></tr>
-                <tr><td class="ref-cat">Training Gap</td><td>훈련/숙련 부족으로 발생</td><td>Rare procedure 실패, Memory item 실패</td></tr>
-                <tr><td class="ref-cat">SOP Design Issue</td><td>절차 자체가 오류 유발 설계</td><td>Step sequence 비직관적</td></tr>
-                <tr><td class="ref-cat">CRM Breakdown</td><td>Crew interaction 문제</td><td>PM monitoring 실패, Challenge 안함</td></tr>
-                <tr><td class="ref-cat">Organizational Factor</td><td>조직 환경 영향</td><td>Turnaround 압박으로 rush</td></tr>
-            </tbody>
-        </table>
+        
+        <div style="margin-bottom: 30px;">
+            <div style="font-weight:900; margin-bottom:8px; color:var(--sc); font-size:15px; border-left: 4px solid var(--sc); padding-left: 8px;">Root Cause Classification (Root Cause 정의 및 판단기준)</div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">구분</th><th style="width:20%;">정의</th><th style="width:23%;">판단기준</th><th style="width:28%;">예시</th><th style="width:17%;">비고</th></tr></thead>
+                <tbody>
+                    <tr><td class="ref-cat">Slip</td><td>알고 있었고 수행 의도도 있었지만 실행 과정에서 실수한 경우</td><td>절차 이해는 정확했음, 수행 직전까지 인지 상태 정상, 행동 단계에서 실수 발생</td><td>스위치 잘못 선택, 숫자 입력 오타, 레버 반대 방향 조작</td><td>→ 잘못 판단 시 Mistake</td></tr>
+                    <tr><td class="ref-cat">Lapse</td><td>해야 한다는 사실 자체를 순간적으로 기억하지 못함</td><td>행동 자체가 발생하지 않음, Reminder 없으면 계속 누락</td><td>Checklist item skip, Callout 미실시, After takeoff flow 중 항목 누락</td><td>→ 기억 못함</td></tr>
+                    <tr><td class="ref-cat">Mistake</td><td>행동은 의도적으로 했지만 판단이 틀린 경우</td><td>본인은 맞다고 믿고 수행, SOP 또는 규정 이해 오류</td><td>잘못된 flap 선택, 잘못된 speed 계산, Limitation 오해</td><td></td></tr>
+                    <tr><td class="ref-cat">Intentional Deviation</td><td>SOP를 알고 있었지만 의도적으로 따르지 않음</td><td>시간 단축 / 편의 / 습관 목적, 위험 인지했지만 실행</td><td>Briefing 생략, Checklist shortcut, OP 순서 변경</td><td></td></tr>
+                    <tr><td class="ref-cat">Training Gap</td><td>훈련 내용 또는 숙련 부족 때문에 발생</td><td>절차 자체 이해 불완전 수행, 속도 현저히 느림, 반복 오류 발생</td><td>Rare procedure 수행 실패, Memory item recall 실패</td><td></td></tr>
+                    <tr><td class="ref-cat">SOP Design Issue</td><td>절차 구조 자체가 오류 유발이 가능하게 설계됨</td><td>동일 SOP 반복 오류 발생, 여러 crew에서 동일 실수 발생</td><td>Step sequence 비직관적, 작업 흐름과 불일치, Callout timing 모호</td><td></td></tr>
+                    <tr><td class="ref-cat">CRM Breakdown</td><td>Crew interaction 문제로 오류 발생 또는 확대</td><td>Cross-check 있었으면 예방 가능, Monitoring 있었으면 탐지 가능</td><td>PM monitoring 실패, Challenge 안함, Authority gradient 영향</td><td></td></tr>
+                    <tr><td class="ref-cat">Organizational Factor</td><td>개인이나 절차의 문제가 아니라 조직 환경의 영향</td><td>스케줄 압박, 문화적 shortcut 허용 분위기, SOP training 부족</td><td>Turnaround 압박 때문에 checklist rush, Fleet 전체 shortcut</td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <div style="font-weight:900; margin-bottom:8px; color:var(--sc); font-size:15px; border-left: 4px solid var(--sc); padding-left: 8px;">Workload (작업 부하)</div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">구분</th><th style="width:20%;">정의</th><th style="width:23%;">판단 기준</th><th style="width:28%;">예시</th><th style="width:17%;">비고</th></tr></thead>
+                <tbody>
+                    <tr><td class="ref-cat">None</td><td>작업 요구 거의 없음</td><td>단일 단순 task, 시간적 여유 충분, 인지 부하 거의 없음</td><td>대기 상태, monitoring only</td><td>부하 없음</td></tr>
+                    <tr><td class="ref-cat">Low</td><td>단일 또는 단순 작업 수행</td><td>시간 압박 거의 없음, 여유 있는 상황 인지 가능</td><td>단일 또는 단순 작업 수행, 시간 압박 거의 없음, 여유 있는 상황 인지 가능, routine task, interruption 없음</td><td>정상 여유</td></tr>
+                    <tr><td class="ref-cat">Medium</td><td>여러 작업 동시 수행</td><td>일정 수준의 time pressure, task prioritization 필요, 집중 필요한 상황</td><td>multitasking, coordination 필요</td><td>주의 필요</td></tr>
+                    <tr><td class="ref-cat">High</td><td>작업 요구가 개인 능력에 근접하거나 초과</td><td>강한 time pressure, 빈번한 interruption, situational awareness 유지 어려움</td><td>task overload, emergency 대응</td><td>과부하</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <div style="font-weight:900; margin-bottom:8px; color:var(--sc); font-size:15px; border-left: 4px solid var(--sc); padding-left: 8px;">Attention (주의 집중 상태)</div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">구분</th><th style="width:20%;">정의</th><th style="width:23%;">판단 기준</th><th style="width:28%;">예시</th><th style="width:17%;">비고</th></tr></thead>
+                <tbody>
+                    <tr><td class="ref-cat">Normal Scan</td><td>체계적으로 여러 정보원 스캔</td><td>계기와 외부 환경을 체계적으로 스캔하며 여러 정보원에 주의를 분산하여 상황인식을 유지하는 상태</td><td>PFD / ND / engine / outside view를 주기적으로 확인, ATC / PM cross-check 정상, abnormal fixation 없음</td><td>abnormal fixation 없음</td></tr>
+                    <tr><td class="ref-cat">Channelized</td><td>특정 작업에 주의 집중</td><td>특정 작업이나 정보원에 주의가 집중되어 다른 관련 정보에 대한 모니터링이 감소한 상태</td><td>FMS programming에 집중하면서 altitude deviation monitoring 감소, abnormal checklist 수행 중 flight path monitoring 감소</td><td>주의 협착</td></tr>
+                    <tr><td class="ref-cat">Fixation</td><td>한 가지 요소에 고착됨</td><td>단일 문제나 작업에 주의가 지속적으로 집중되어 변화하는 상황이나 다른 중요한 정보가 적절히 인지되지 않는 상태</td><td>FMS 문제 해결에 집착, landing gear 문제 해결 중 altitude deviation 인지 못함</td><td>위험 상태</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <div style="font-weight:900; margin-bottom:8px; color:var(--sc); font-size:15px; border-left: 4px solid var(--sc); padding-left: 8px;">Time Pressure (시간 압박)</div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">구분</th><th style="width:40%;">판단 기준</th><th style="width:48%;">상세 설명</th></tr></thead>
+                <tbody>
+                    <tr><td class="ref-cat">None</td><td>시간 여유 충분</td><td>긴급한 결정이나 조치가 필요 없는 안정적인 상태</td></tr>
+                    <tr><td class="ref-cat">Low</td><td>약간의 시간 제약</td><td>일반적인 절차 수행에는 문제가 없으나 시간 관리가 시작되는 단계</td></tr>
+                    <tr><td class="ref-cat">Medium</td><td>작업 우선순위 조정 필요</td><td>가용한 시간 내에 작업을 마치기 위해 효율적인 우선순위 배분이 필요한 상태</td></tr>
+                    <tr><td class="ref-cat">High</td><td>즉각적인 대응 요구</td><td>매우 촉박한 시간 내에 결정과 행동이 이루어져야 하는 높은 압박 상태</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <div style="font-weight:900; margin-bottom:8px; color:var(--sc); font-size:15px; border-left: 4px solid var(--sc); padding-left: 8px;">Fatigue (피로도)</div>
+            <table class="ref-table">
+                <thead><tr><th style="width:12%;">구분</th><th style="width:40%;">정의</th><th style="width:48%;">예시</th></tr></thead>
+                <tbody>
+                    <tr><td class="ref-cat">None</td><td>피로 징후가 없으며 주의력과 인지 기능이 정상적으로 유지되는 상태</td><td>alertness 정상, 집중력 저하 없음, 반응속도 정상</td></tr>
+                    <tr><td class="ref-cat">Low</td><td>경미한 피로가 있으나 작업 수행과 상황 인식에는 거의 영향을 주지 않는 상태</td><td>약간의 피로감, 집중력 유지 가능, 수행 능력 영향 미미, 장시간 근무 초기 단계</td></tr>
+                    <tr><td class="ref-cat">Medium</td><td>피로로 인해 집중력과 주의 분배 능력이 감소하며 작업 수행에 일부 영향을 줄 수 있는 상태</td><td>집중력 감소, 주의 분산 어려움, 반응속도 약간 저하, 장시간 비행 후반, 수면 부족</td></tr>
+                    <tr><td class="ref-cat">High</td><td>심한 피로로 인해 주의력, 판단력 또는 상황인식이 현저히 저하된 상태</td><td>alertness 크게 감소, monitoring 능력 저하, error risk 증가, severe sleep loss, 장시간 duty 후반</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
