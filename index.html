@@ -168,7 +168,7 @@
                     <optgroup label="JAPAN / ASIA">
                     <option>ICN-NRT</option><option>NRT-ICN</option>
                     <option>ICN-HKG</option><option>HKG-ICN</option>
-                    <option>ICN-DAD</option><option>DAD-ICN</option>
+                    <option>ICN-SGN</option><option>SGN-ICN</option>
                     <option>ICN-BKK</option><option>BKK-ICN</option>  
                     </optgroup>
                     <optgroup label="AMERICA (West)">
@@ -363,18 +363,21 @@
     <div class="sec-title">4. CRM COUNTERMEASURES</div>
     <table>
         <tr>
-            <td class="lbl">BRIEFING PERFORMANCE</td>
-            <td class="lbl">MONITORING (PF/PM)</td>
-            <td class="lbl">CROSS-CHECK</td>
-            <td class="lbl">CHALLENGE</td>
-            <td class="lbl">INTERVENTION</td>
+            <td class="lbl" style="width:110px;">BRIEFING</td>
+            <td><select data-field="briefing" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option><option>N/A</option></select></td>
+            <td class="lbl" style="width:110px;">MONITORING</td>
+            <td><select data-field="monitoring" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
         </tr>
         <tr>
-            <td><select data-field="briefing" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option><option>N/A</option></select></td>
-            <td><select data-field="monitoring" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+            <td class="lbl" style="width:110px;">CROSS-CHECK</td>
             <td><select data-field="cross_check" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+            <td class="lbl" style="width:110px;">CHALLENGE</td>
             <td><select data-field="challenge" style="width:100%;"><option value="">— Select —</option><option>Effective</option><option>Ineffective</option><option>None</option></select></td>
+        </tr>
+        <tr>
+            <td class="lbl" style="width:110px;">INTERVENTION</td>
             <td><select data-field="intervention" style="width:100%;"><option value="">— Select —</option><option>Too Early</option><option>Timely</option><option>Late</option><option>None</option></select></td>
+            <td colspan="2" style="background: #f9f9f9; border: none;"></td>
         </tr>
     </table>
 
