@@ -551,19 +551,13 @@
     <div class="send-modal-content">
         <h2 style="color:var(--sc); margin-bottom:15px;">📤 SEND / EXPORT</h2>
         <div class="send-info">
-            <b>1. PDF 저장</b>: 인쇄 화면 → PDF로 저장 → 메일/슬랙 첨부<br>
-            <b>2. JSON 다운로드</b>: 엑셀에 자동 입력할 데이터 파일<br>
-            <b>3. 추천 워크플로</b>: ① PDF 저장 → ② JSON 다운로드 → ③ 둘 다 첨부 전송
+            <b>PDF</b>: 인쇄 화면 → PDF로 저장<br>
+            <b>JSON</b>: 엑셀에 자동 입력할 데이터 파일<br>
+            <b>권장 순서</b>: ① PDF → ② JSON → ③ 둘 다 첨부하여 전송
         </div>
         <div class="send-btn-row">
-            <button class="btn-pdf" onclick="savePDF()">📄 PDF 저장</button>
-            <button class="btn-json" onclick="downloadJSON()">💾 JSON 다운로드</button>
-        </div>
-        <div class="send-btn-row">
-            <button class="btn-mail" onclick="openMailto()">📧 메일 작성 열기</button>
-            <button class="btn-slack" onclick="copyForSlack()">💬 Slack용 복사</button>
-        </div>
-        <div style="text-align:center; margin-top:15px;">
+            <button class="btn-pdf" onclick="savePDF()">📄 PDF</button>
+            <button class="btn-json" onclick="downloadJSON()">💾 JSON</button>
             <button class="btn-cancel" onclick="closeSendModal()">닫기</button>
         </div>
     </div>
